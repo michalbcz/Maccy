@@ -55,7 +55,6 @@ This feature adds detection and warnings for hidden/invisible characters in clip
 ### 1. Add New Files to Xcode Project
 The following files need to be manually added to the Xcode project:
 - `Maccy/Extensions/String+HiddenCharacters.swift`
-- `Maccy/Views/HiddenCharactersConfirmationView.swift` (optional, can be removed if not used)
 - `Maccy/Views/InspectHiddenCharactersView.swift`
 - `MaccyTests/StringHiddenCharactersTests.swift`
 
@@ -63,7 +62,7 @@ The following files need to be manually added to the Xcode project:
 1. Open `Maccy.xcodeproj` in Xcode
 2. Right-click on the `Extensions` folder → "Add Files to Maccy..."
 3. Select `String+HiddenCharacters.swift`
-4. Repeat for Views folder with the two view files
+4. Repeat for Views folder with `InspectHiddenCharactersView.swift`
 5. Repeat for MaccyTests folder with test file
 
 ### 2. Build and Test

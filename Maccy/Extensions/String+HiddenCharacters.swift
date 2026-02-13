@@ -95,13 +95,8 @@ extension Character {
 
     let value = scalar.value
 
-    // Zero-width characters
+    // Zero-width characters (includes ZWNJ and ZWJ)
     if value >= 0x200B && value <= 0x200F {
-      return true
-    }
-
-    // Zero-width joiner and non-joiner
-    if value == 0x200C || value == 0x200D {
       return true
     }
 

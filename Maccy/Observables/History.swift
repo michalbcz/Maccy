@@ -362,7 +362,7 @@ class History: ItemsContainer { // swiftlint:disable:this type_body_length
 
   @MainActor
   private func createCleanedItem(from originalItem: HistoryItem) -> HistoryItem {
-    let cleanedContents = originalItem.contents.compactMap { content -> HistoryItemContent? in
+    let cleanedContents = originalItem.contents.map { content -> HistoryItemContent in
       guard let data = content.value,
             NSPasteboard.PasteboardType(content.type) == .string,
             let originalString = String(data: data, encoding: .utf8) else {
