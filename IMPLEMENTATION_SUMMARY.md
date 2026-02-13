@@ -69,14 +69,17 @@ This feature has been **fully implemented** and is ready for integration into th
 - **Directional Formatting**: LRE, RLE, PDF, LRO, RLO (U+202A-202E)
 - **Word Joiners**: WJ, FA, IT, IS, IP (U+2060-2064)
 - **Byte Order Mark**: BOM (U+FEFF)
+- **Unicode Tag Characters**: U+E0000-E007F (ASCII Smuggler attacks)
+- **Variation Selectors**: U+FE00-FE0F, U+E0100-E01EF
 - **Control Characters**: All except tab, newline, CR
 - **Non-Character Code Points**: Unicode permanently reserved chars
 
 ### Attack Vectors Mitigated
 ✅ **Trojan Source** - Bidirectional text attacks
 ✅ **Homograph Attacks** - Visual confusion
-✅ **Data Exfiltration** - Steganographic hiding
+✅ **Data Exfiltration** - Steganographic hiding with tag characters
 ✅ **Social Engineering** - Invisible text manipulation
+✅ **ASCII Smuggling** - Unicode tag-based data smuggling attacks
 
 ## User Experience
 

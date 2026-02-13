@@ -114,6 +114,13 @@ Create test cases with these strings:
 
 // Multiple hidden chars
 "safe\u{200B}\u{200C}\u{200D}text"
+
+// Unicode Tag Characters (ASCII Smuggler attack)
+// Encoding "hi" as invisible tags: U+E0068 (h), U+E0069 (i)
+"Normal\u{E0068}\u{E0069}Text"
+
+// Variation Selectors
+"Test\u{FE00}\u{E0100}Text"
 ```
 
 ## UI/UX Considerations
@@ -147,14 +154,17 @@ User chooses action:
 2. **Directional formatting**: U+202A to U+202E (can cause text reversal attacks)
 3. **Word joiners**: U+2060 to U+2064
 4. **Byte Order Mark (BOM)**: U+FEFF
-5. **Control characters** (except tab, newline, carriage return)
-6. **Non-character code points**
+5. **Unicode Tag Characters**: U+E0000 to U+E007F (ASCII Smuggler attacks)
+6. **Variation Selectors**: U+FE00 to U+FE0F, U+E0100 to U+E01EF
+7. **Control characters** (except tab, newline, carriage return)
+8. **Non-character code points**
 
 ### Why This Matters
 - **Trojan Source attacks**: Hidden chars can make code appear safe while being malicious
 - **Homograph attacks**: Visual confusion attacks
-- **Data exfiltration**: Steganographic data hiding
+- **Data exfiltration**: Steganographic data hiding using tag characters
 - **Social engineering**: Invisible text manipulation
+- **ASCII Smuggling**: Complete invisible payloads using Unicode tag block
 
 ## Future Enhancements
 
