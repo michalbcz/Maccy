@@ -1,5 +1,24 @@
 import Foundation
 
+private let hiddenCharacterLabels: [UInt32: String] = [
+  0x200B: "<ZWSP>",
+  0x200C: "<ZWNJ>",
+  0x200D: "<ZWJ>",
+  0x200E: "<LRM>",
+  0x200F: "<RLM>",
+  0x202A: "<LRE>",
+  0x202B: "<RLE>",
+  0x202C: "<PDF>",
+  0x202D: "<LRO>",
+  0x202E: "<RLO>",
+  0x2060: "<WJ>",
+  0x2061: "<FA>",
+  0x2062: "<IT>",
+  0x2063: "<IS>",
+  0x2064: "<IP>",
+  0xFEFF: "<BOM>"
+]
+
 extension String {
   /// Checks if the string contains hidden or invisible characters
   var containsHiddenCharacters: Bool {
@@ -25,46 +44,14 @@ extension String {
     for char in self {
       if char.isHiddenCharacter {
         // Replace with visible representation
+        let value = char.unicodeScalars.first?.value ?? 0
         let replacement: String
-        switch char.unicodeScalars.first?.value {
-        case 0x200B:
-          replacement = "<ZWSP>"
-        case 0x200C:
-          replacement = "<ZWNJ>"
-        case 0x200D:
-          replacement = "<ZWJ>"
-        case 0x200E:
-          replacement = "<LRM>"
-        case 0x200F:
-          replacement = "<RLM>"
-        case 0x202A:
-          replacement = "<LRE>"
-        case 0x202B:
-          replacement = "<RLE>"
-        case 0x202C:
-          replacement = "<PDF>"
-        case 0x202D:
-          replacement = "<LRO>"
-        case 0x202E:
-          replacement = "<RLO>"
-        case 0x2060:
-          replacement = "<WJ>"
-        case 0x2061:
-          replacement = "<FA>"
-        case 0x2062:
-          replacement = "<IT>"
-        case 0x2063:
-          replacement = "<IS>"
-        case 0x2064:
-          replacement = "<IP>"
-        case 0xFEFF:
-          replacement = "<BOM>"
-        default:
-          if char.unicodeScalars.first?.properties.isNoncharacterCodePoint == true {
-            replacement = "<NC>"
-          } else {
-            replacement = String(format: "<U+%04X>", char.unicodeScalars.first?.value ?? 0)
-          }
+        if let label = hiddenCharacterLabels[value] {
+          replacement = label
+        } else if char.unicodeScalars.first?.properties.isNoncharacterCodePoint == true {
+          replacement = "<NC>"
+        } else {
+          replacement = String(format: "<U+%04X>", value)
         }
 
         let replacementString = NSAttributedString(

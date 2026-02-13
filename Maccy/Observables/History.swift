@@ -362,7 +362,9 @@ class History: ItemsContainer { // swiftlint:disable:this type_body_length
 
   @MainActor
   private func createCleanedItem(from originalItem: HistoryItem) -> HistoryItem {
+    // Process all contents, cleaning string types while preserving others
     let cleanedContents = originalItem.contents.map { content -> HistoryItemContent in
+      // Only process string content, return others unchanged
       guard let data = content.value,
             NSPasteboard.PasteboardType(content.type) == .string,
             let originalString = String(data: data, encoding: .utf8) else {
