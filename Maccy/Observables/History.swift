@@ -302,11 +302,27 @@ class History: ItemsContainer { // swiftlint:disable:this type_body_length
       return
     }
 
+    // Check for hidden characters before pasting
+    if item.item.hasHiddenCharacters {
+      AppState.shared.pendingPasteItem = item
+      AppState.shared.showHiddenCharConfirmation = true
+      return
+    }
+
+    performSelection(item)
+  }
+
+  @MainActor
+  func performSelection(_ item: HistoryItemDecorator?, removeHiddenChars: Bool = false) {
+    guard let item else {
+      return
+    }
+
     let modifierFlags = currentModifierFlags()
 
     if modifierFlags.isEmpty {
       AppState.shared.popup.close()
-      Clipboard.shared.copy(item.item, removeFormatting: Defaults[.removeFormattingByDefault])
+      copyAndPaste(item: item, removeFormatting: Defaults[.removeFormattingByDefault], removeHiddenChars: removeHiddenChars)
       if Defaults[.pasteByDefault] {
         Clipboard.shared.paste()
       }
@@ -314,14 +330,14 @@ class History: ItemsContainer { // swiftlint:disable:this type_body_length
       switch HistoryItemAction(modifierFlags) {
       case .copy:
         AppState.shared.popup.close()
-        Clipboard.shared.copy(item.item)
+        copyAndPaste(item: item, removeHiddenChars: removeHiddenChars)
       case .paste:
         AppState.shared.popup.close()
-        Clipboard.shared.copy(item.item)
+        copyAndPaste(item: item, removeHiddenChars: removeHiddenChars)
         Clipboard.shared.paste()
       case .pasteWithoutFormatting:
         AppState.shared.popup.close()
-        Clipboard.shared.copy(item.item, removeFormatting: true)
+        copyAndPaste(item: item, removeFormatting: true, removeHiddenChars: removeHiddenChars)
         Clipboard.shared.paste()
       case .unknown:
         return
@@ -331,6 +347,45 @@ class History: ItemsContainer { // swiftlint:disable:this type_body_length
     Task {
       searchQuery = ""
     }
+  }
+
+  @MainActor
+  private func copyAndPaste(item: HistoryItemDecorator, removeFormatting: Bool = false, removeHiddenChars: Bool = false) {
+    if removeHiddenChars {
+      // Create a modified copy with hidden characters removed
+      let cleanedItem = createCleanedItem(from: item.item)
+      Clipboard.shared.copy(cleanedItem, removeFormatting: removeFormatting)
+    } else {
+      Clipboard.shared.copy(item.item, removeFormatting: removeFormatting)
+    }
+  }
+
+  @MainActor
+  private func createCleanedItem(from originalItem: HistoryItem) -> HistoryItem {
+    // Process all contents, cleaning string types while preserving others
+    let cleanedContents = originalItem.contents.map { content -> HistoryItemContent in
+      // Only process string content, return others unchanged
+      guard let data = content.value,
+            NSPasteboard.PasteboardType(content.type) == .string,
+            let originalString = String(data: data, encoding: .utf8) else {
+        return content
+      }
+
+      let cleanedString = originalString.removingHiddenCharacters
+      guard let cleanedData = cleanedString.data(using: .utf8) else {
+        return content
+      }
+
+      return HistoryItemContent(type: content.type, value: cleanedData)
+    }
+
+    let cleanedItem = HistoryItem(contents: cleanedContents)
+    cleanedItem.title = originalItem.title.removingHiddenCharacters
+    cleanedItem.application = originalItem.application
+    cleanedItem.pin = originalItem.pin
+    cleanedItem.hasHiddenCharacters = false
+
+    return cleanedItem
   }
 
   @MainActor

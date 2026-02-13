@@ -25,6 +25,9 @@ class AppState: Sendable {
     }
   }
 
+  var showHiddenCharConfirmation: Bool = false
+  var pendingPasteItem: HistoryItemDecorator?
+
   var menuIconText: String {
     var title = history.unpinnedItems.first?.text.shortened(to: 100)
       .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""

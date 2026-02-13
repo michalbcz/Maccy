@@ -131,6 +131,17 @@ class HistoryItemTests: XCTestCase {
     XCTAssertEqual(item2.pin, "")
   }
 
+  func testHiddenCharactersDetection() {
+    let normalItem = historyItem("Hello World")
+    XCTAssertFalse(normalItem.hasHiddenCharacters)
+
+    let dangerousItem = historyItem("Hello\u{200B}World")
+    XCTAssertTrue(dangerousItem.hasHiddenCharacters)
+
+    let rtlItem = historyItem("admin\u{202E}test")
+    XCTAssertTrue(rtlItem.hasHiddenCharacters)
+  }
+
   private func historyItem(_ value: String?) -> HistoryItem {
     let contents = [
       HistoryItemContent(
