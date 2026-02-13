@@ -65,6 +65,7 @@ class HistoryItem {
   var numberOfCopies: Int = 1
   var pin: String?
   var title = ""
+  var hasHiddenCharacters: Bool = false
 
   @Relationship(deleteRule: .cascade, inverse: \HistoryItemContent.item)
   var contents: [HistoryItemContent] = []
@@ -95,6 +96,9 @@ class HistoryItem {
 
     // 1k characters is trade-off for performance
     var title = previewableText.shortened(to: 1_000)
+
+    // Check for hidden characters
+    self.hasHiddenCharacters = title.containsHiddenCharacters
 
     if Defaults[.showSpecialSymbols] {
       if let range = title.range(of: "^ +", options: .regularExpression) {

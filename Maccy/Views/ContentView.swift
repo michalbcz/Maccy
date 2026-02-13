@@ -5,6 +5,7 @@ struct ContentView: View {
   @State private var appState = AppState.shared
   @State private var modifierFlags = ModifierFlags()
   @State private var scenePhase: ScenePhase = .background
+  @State private var showInspectView = false
 
   @FocusState private var searchFocused: Bool
 
@@ -60,6 +61,38 @@ struct ContentView: View {
     .environment(appState)
     .environment(modifierFlags)
     .environment(\.scenePhase, scenePhase)
+    .confirmationDialog(
+      "Hidden Characters Detected",
+      isPresented: $appState.showHiddenCharConfirmation,
+      titleVisibility: .visible
+    ) {
+      Button("Paste Anyway") {
+        if let item = appState.pendingPasteItem {
+          appState.history.performSelection(item, removeHiddenChars: false)
+        }
+        appState.pendingPasteItem = nil
+      }
+      Button("Strip Hidden Characters") {
+        if let item = appState.pendingPasteItem {
+          appState.history.performSelection(item, removeHiddenChars: true)
+        }
+        appState.pendingPasteItem = nil
+      }
+      Button("Inspect") {
+        showInspectView = true
+        appState.showHiddenCharConfirmation = false
+      }
+      Button("Cancel", role: .cancel) {
+        appState.pendingPasteItem = nil
+      }
+    } message: {
+      Text("This text contains hidden or invisible characters that could be dangerous. What would you like to do?")
+    }
+    .sheet(isPresented: $showInspectView) {
+      if let item = appState.pendingPasteItem {
+        InspectHiddenCharactersView(text: item.text)
+      }
+    }
     // FloatingPanel is not a scene, so let's implement custom scenePhase..
     .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) {
       if let window = $0.object as? NSWindow,

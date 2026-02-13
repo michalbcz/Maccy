@@ -40,6 +40,7 @@ struct ListItemView<Title: View, ID: Hashable>: View {
   var selectionIndex: Int?
   var help: LocalizedStringKey?
   var selectionAppearance: SelectionAppearance = .none
+  var hasHiddenCharacters: Bool = false
   @ViewBuilder var title: () -> Title
 
   @Default(.showApplicationIcons) private var showIcons
@@ -60,6 +61,14 @@ struct ListItemView<Title: View, ID: Hashable>: View {
 
       Spacer()
         .frame(width: showIcons ? 5 : 10)
+
+      if hasHiddenCharacters {
+        Image(systemName: "exclamationmark.triangle.fill")
+          .foregroundColor(.orange)
+          .padding(.trailing, 5)
+          .padding(.vertical, 5)
+          .help("This text contains hidden characters")
+      }
 
       if let accessoryImage {
         Image(nsImage: accessoryImage)
@@ -112,7 +121,13 @@ struct ListItemView<Title: View, ID: Hashable>: View {
     .foregroundStyle(isSelected ? Color.white : .primary)
     // macOS 26 broke hovering if no background is present.
     // The slight opcaity white background is a workaround
-    .background(isSelected ? Color.accentColor.opacity(0.8) : .white.opacity(0.001))
+    .background(
+      isSelected
+        ? Color.accentColor.opacity(0.8)
+        : hasHiddenCharacters
+        ? Color.red.opacity(0.1)
+        : .white.opacity(0.001)
+    )
     .clipShape(selectionAppearance.rect(cornerRadius: Popup.cornerRadius))
     .hoverSelectionId(selectionId)
     .help(help ?? "")
