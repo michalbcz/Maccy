@@ -7,15 +7,15 @@ struct InspectHiddenCharactersView: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 15) {
       HStack {
-        Text("Hidden Characters Inspection")
+        Text(NSLocalizedString("hidden_chars_inspect_title", comment: ""))
           .font(.headline)
         Spacer()
-        Button("Close") {
+        Button(NSLocalizedString("hidden_chars_inspect_close", comment: "")) {
           dismiss()
         }
       }
 
-      Text("Hidden or invisible characters are shown with labels on a red background:")
+      Text(NSLocalizedString("hidden_chars_inspect_description", comment: ""))
         .font(.subheadline)
         .foregroundColor(.secondary)
 
@@ -35,7 +35,7 @@ struct InspectHiddenCharactersView: View {
 
       HStack {
         Spacer()
-        Button("Copy Without Hidden Characters") {
+        Button(NSLocalizedString("hidden_chars_inspect_copy_clean", comment: "")) {
           let cleanText = text.removingHiddenCharacters
           NSPasteboard.general.clearContents()
           NSPasteboard.general.setString(cleanText, forType: .string)

@@ -67,7 +67,7 @@ struct ListItemView<Title: View, ID: Hashable>: View {
           .foregroundColor(.orange)
           .padding(.trailing, 5)
           .padding(.vertical, 5)
-          .help("This text contains hidden characters")
+          .help(NSLocalizedString("hidden_chars_tooltip", comment: ""))
       }
 
       if let accessoryImage {

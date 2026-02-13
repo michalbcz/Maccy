@@ -62,31 +62,31 @@ struct ContentView: View {
     .environment(modifierFlags)
     .environment(\.scenePhase, scenePhase)
     .confirmationDialog(
-      "Hidden Characters Detected",
+      NSLocalizedString("hidden_chars_alert_title", comment: ""),
       isPresented: $appState.showHiddenCharConfirmation,
       titleVisibility: .visible
     ) {
-      Button("Paste Anyway") {
+      Button(NSLocalizedString("hidden_chars_alert_paste_anyway", comment: "")) {
         if let item = appState.pendingPasteItem {
           appState.history.performSelection(item, removeHiddenChars: false)
         }
         appState.pendingPasteItem = nil
       }
-      Button("Strip Hidden Characters") {
+      Button(NSLocalizedString("hidden_chars_alert_strip", comment: "")) {
         if let item = appState.pendingPasteItem {
           appState.history.performSelection(item, removeHiddenChars: true)
         }
         appState.pendingPasteItem = nil
       }
-      Button("Inspect") {
+      Button(NSLocalizedString("hidden_chars_alert_inspect", comment: "")) {
         showInspectView = true
         appState.showHiddenCharConfirmation = false
       }
-      Button("Cancel", role: .cancel) {
+      Button(NSLocalizedString("hidden_chars_alert_cancel", comment: ""), role: .cancel) {
         appState.pendingPasteItem = nil
       }
     } message: {
-      Text("This text contains hidden or invisible characters that could be dangerous. What would you like to do?")
+      Text(NSLocalizedString("hidden_chars_alert_message", comment: ""))
     }
     .sheet(isPresented: $showInspectView) {
       if let item = appState.pendingPasteItem {

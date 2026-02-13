@@ -28,3 +28,15 @@
 "system_settings_pane" = "Privacy & Security settings";
 "system_preferences_name" = "System Preferences";
 "system_preferences_pane" = "Security & Privacy preferences";
+
+"hidden_chars_alert_title" = "Hidden Characters Detected";
+"hidden_chars_alert_message" = "This text contains hidden or invisible characters that could be dangerous. What would you like to do?";
+"hidden_chars_alert_paste_anyway" = "Paste Anyway";
+"hidden_chars_alert_strip" = "Strip Hidden Characters";
+"hidden_chars_alert_inspect" = "Inspect";
+"hidden_chars_alert_cancel" = "Cancel";
+"hidden_chars_tooltip" = "This text contains hidden characters";
+"hidden_chars_inspect_title" = "Hidden Characters Inspection";
+"hidden_chars_inspect_description" = "Hidden or invisible characters are shown with labels on a red background:";
+"hidden_chars_inspect_close" = "Close";
+"hidden_chars_inspect_copy_clean" = "Copy Without Hidden Characters";
